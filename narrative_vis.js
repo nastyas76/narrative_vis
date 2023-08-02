@@ -1,3 +1,35 @@
+// Constants for the scenes
+const scenes = [
+  {
+    title: "Scene 1: Relationship between Age and Education",
+    xLabel: "Age",
+    yLabel: "Education",
+    xDataKey: "age",
+    yDataKey: "education",
+  },
+  {
+    title: "Scene 2: Relationship between Age and Income",
+    xLabel: "Age",
+    yLabel: "Income",
+    xDataKey: "age",
+    yDataKey: "income",
+  },
+  {
+    title: "Scene 3: Relationship between Education and Income",
+    xLabel: "Education",
+    yLabel: "Income",
+    xDataKey: "education",
+    yDataKey: "income",
+  },
+  {
+    title: "Scene 4: Interactive Exploration",
+    xLabel: "Age",
+    yLabel: "Education",
+    xDataKey: "age",
+    yDataKey: "education",
+  },
+];
+
 //load data
 async function init() {
   data = await d3.csv("https://nastyas76.github.io/narrative_vis/adult_census.csv");
@@ -69,39 +101,6 @@ async function init() {
     svg.append("text").attr("class", "axis-title").attr("x", width / 2).attr("y", height + 40).attr("text-anchor", "middle").text(xLabel);
     svg.append("text").attr("class", "axis-title").attr("x", -height / 2).attr("y", -40).attr("text-anchor", "middle").attr("transform", "rotate(-90)").text(yLabel);
   }
-
-// Constants for the scenes
-const scenes = [
-  {
-    title: "Scene 1: Relationship between Age and Education",
-    xLabel: "Age",
-    yLabel: "Education",
-    xDataKey: "age",
-    yDataKey: "education",
-  },
-  {
-    title: "Scene 2: Relationship between Age and Income",
-    xLabel: "Age",
-    yLabel: "Income",
-    xDataKey: "age",
-    yDataKey: "income",
-  },
-  {
-    title: "Scene 3: Relationship between Education and Income",
-    xLabel: "Education",
-    yLabel: "Income",
-    xDataKey: "education",
-    yDataKey: "income",
-  },
-  {
-    title: "Scene 4: Interactive Exploration",
-    xLabel: "Age",
-    yLabel: "Education",
-    xDataKey: "age",
-    yDataKey: "education",
-  },
-];
-
 
 d3.csv("https://nastyas76.github.io/narrative_vis/adult_census.csv").then(function(data) {
   processData(data);
