@@ -2,11 +2,12 @@
 <html>
 <head>
     <title>Narrative Visualization</title>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <style> .chart rect {fill: steelblue}</style>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://unpkg.com/d3-annotation/build/d3-annotation.min.js"></script>
 </head>
 <body>
-    <p> Here are the numbers from my data <span id="data"></span></p>
-    <svg class ="chart" width ="120" height ="500"></svg>
+    <div id="chart"></div>
+    <button id="nextButton">Next Scene</button>
     <script src="narrative_vis.js"></script>
-</body></html>
+</body>
+</html>
