@@ -8,6 +8,6 @@ d3.select(".chart")
     .attr("x", function(d,i) {return 20*i;})
     .attr("height", 20)
     .attr("y", 400)
-    .transition()
+    .transition().duration(5000)
     .attr("height", function(d) { return 10*d; })
-    .attr("y", function(d) { return 400 - d; })
+    .attr("y", function(d) { return 420 - 10*d; });
