@@ -1,6 +1,6 @@
 var data = [4, 8, 15, 16, 23, 42];
 document.getElementById("data").innerHTML= data;
-d3.select("chart")
+d3.select(".chart")
     .selectAll("rect")
     .data(data)
     .enter().append("rect")
