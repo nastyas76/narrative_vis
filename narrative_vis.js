@@ -1,197 +1,94 @@
-// Constants for the scenes
-const scenes = [
-  {
-    title: "Scene 1: Relationship between Age and Education",
-    xLabel: "Age",
-    yLabel: "Education",
-    xDataKey: "age",
-    yDataKey: "education",
-  },
-  {
-    title: "Scene 2: Relationship between Age and Income",
-    xLabel: "Age",
-    yLabel: "Income",
-    xDataKey: "age",
-    yDataKey: "income",
-  },
-  {
-    title: "Scene 3: Relationship between Education and Income",
-    xLabel: "Education",
-    yLabel: "Income",
-    xDataKey: "education",
-    yDataKey: "income",
-  },
-  {
-    title: "Scene 4: Interactive Exploration",
-    xLabel: "Age",
-    yLabel: "Education",
-    xDataKey: "age",
-    yDataKey: "education",
-  },
-];
-
-//load data
-async function init() {
-  data = await d3.csv("https://nastyas76.github.io/narrative_vis/adult_census.csv");
+margin = ({top: 10, right: 10, bottom: 20, left: 20})
+height = 500
+width = 700
+ 
+d3.csv("https://nastyas76.github.io/narrative_vis/world-data-23_adjusted.csv", function(data) {
   console.log(data);
-
-  // Convert numeric values to numbers
-  data.forEach(d => {
-    d.age = +d.age;
-    d.education = +d.education;
-    d.income = +d.income;
-  }
-  );
-  // initialize scene index and render first scene
-  let sceneIndex = 0;
-  renderScene(sceneIndex);
-
-  // Handle "Next Scene" button click
-  const nextButton = document.getElementById("nextButton");
-  nextButton.addEventListener("click", function() {
-    sceneIndex++;
-    if (sceneIndex >= scenes.length) {
-      sceneIndex = 0;
-    }
-    renderScene(sceneIndex);
-  }
-  );
-  // Function to render each scene
-  function renderScene(index) {
-    const scene = scenes[index];
-    const xLabel = scene.xLabel;
-    const yLabel = scene.yLabel;
-    const xDataKey = scene.xDataKey;
-    const yDataKey = scene.yDataKey;
-
-
-    // Remove existing SVG
-    d3.select("#chart").selectAll("svg").remove();
-
-    // Set up SVG dimensions
-    const margin = {
-      top: 30,
-      right: 30,
-      bottom: 50,
-      left: 60
-    };
-    const width = 500 - margin.left - margin.right;
-    const height = 300 - margin.top - margin.bottom; 
-
-    // Create SVG element
-    const svg = d3.select("#chart").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", `translate(${margin.left}, ${margin.top})`);
-    console.log(svg);
-
-    // Set up scales
-    const xScale = d3.scaleLinear().domain(d3.extent(data, d => d[xDataKey])).range([0, width]);
-    const yScale = d3.scaleLinear().domain(d3.extent(data, d => d[yDataKey])).range([height, 0]);
-
-
-    // Draw the bar chart
-    svg.selectAll(".bar").data(data).enter().append("rect").attr("class", "bar").attr("x", d => xScale(d[xDataKey])).attr("width", 10).attr("y", d => yScale(d[yDataKey])).attr("height", d => height - yScale(d[yDataKey]));
-
-    // Add axis labels
-    svg.append("text").attr("class", "axis-label").attr("x", width / 2).attr("y", height + 40).attr("text-anchor", "middle").text(xLabel);
-    svg.append("text").attr("class", "axis-label").attr("x", -height / 2).attr("y", -40).attr("text-anchor", "middle").attr("transform", "rotate(-90)").text(yLabel);
-    
-    // Add chart title
-    svg.append("text").attr("class", "chart-title").attr("x", width / 2).attr("y", -10).attr("text-anchor", "middle").text(scene.title);
-
-    // Add axis titles
-    svg.append("text").attr("class", "axis-title").attr("x", width / 2).attr("y", height + 40).attr("text-anchor", "middle").text(xLabel);
-    svg.append("text").attr("class", "axis-title").attr("x", -height / 2).attr("y", -40).attr("text-anchor", "middle").attr("transform", "rotate(-90)").text(yLabel);
-  }
-
-d3.csv("https://nastyas76.github.io/narrative_vis/adult_census.csv").then(function(data) {
-  processData(data);
-}).catch(function(error) {
-  console.error("Error loading CSV file:", error);
 });
 
-function processData(data) {
-  // Convert numeric values to numbers
-  data.forEach(d => {
-    d.age = +d.age;
-    d.education = +d.education;
-    d.income = +d.income;
-  });
+dataTop20 = data.sort(function(a,b) { return +a.GDP - +b.GDP })
+                .filter(function(d,i){ return i<20 })
 
-  // Initialize scene index and render first scene
-  let sceneIndex = 0;
-  renderScene(sceneIndex);
+x = d3.scaleLinear()
+  .domain([0, d3.max(data, d => d.Co2-Emissions)])
+  .range([margin.left, width - margin.right])
+  .nice()
 
-  // Handle "Next Scene" button click
-  const nextButton = document.getElementById("nextButton");
-  nextButton.addEventListener("click", function() {
-    sceneIndex++;
-    if (sceneIndex >= scenes.length) {
-      sceneIndex = 0;
-    }
-    renderScene(sceneIndex);
-  });
+y = d3.scaleLinear()
+  .domain([0, d3.max(data, d => d['Life expectancy'])])
+  .range([height - margin.bottom, margin.top])
+  .nice()
 
-  // Function to render each scene
-  function renderScene(index) {
-    const scene = scenes[index];
-    const xLabel = scene.xLabel;
-    const yLabel = scene.yLabel;
-    const xDataKey = scene.xDataKey;
-    const yDataKey = scene.yDataKey;
+color = d3.scaleOrdinal()
+  .domain(data.map(d => d.Country))
+  .range(d3.schemeTableau10) 
 
-    // Remove existing SVG
-    d3.select("#chart").selectAll("svg").remove();
+size = d3.scaleSqrt()
+  .domain(d3.extent(data, d => d.GDP))
+  .range([4, 35])
 
-    // Set up SVG dimensions
-    const margin = { top: 30, right: 30, bottom: 50, left: 60 };
-    const width = 500 - margin.left - margin.right;
-    const height = 300 - margin.top - margin.bottom;
-
-    // Create SVG element
-    const svg = d3.select("#chart")
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", `translate(${margin.left}, ${margin.top})`);
-
-    // Set up scales
-    const xScale = d3.scaleLinear().domain(d3.extent(data, d => d[xDataKey])).range([0, width]);
-    const yScale = d3.scaleLinear().domain(d3.extent(data, d => d[yDataKey])).range([height, 0]);
-
-    // Draw the bar chart
-    svg.selectAll(".bar")
-      .data(data)
-      .enter()
-      .append("rect")
-      .attr("class", "bar")
-      .attr("x", d => xScale(d[xDataKey]))
-      .attr("width", 10)
-      .attr("y", d => yScale(d[yDataKey]))
-      .attr("height", d => height - yScale(d[yDataKey]));
-
-    // Add axis labels
-    svg.append("text")
-      .attr("x", width / 2)
-      .attr("y", height + margin.bottom - 10)
-      .style("text-anchor", "middle")
-      .text(xLabel);
-
-    svg.append("text")
-      .attr("x", -height / 2)
-      .attr("y", -margin.left + 10)
-      .attr("transform", "rotate(-90)")
-      .style("text-anchor", "middle")
-      .text(yLabel);
-
-    // Add title
-    svg.append("text")
-      .attr("x", width / 2)
-      .attr("y", -margin.top)
-      .style("text-anchor", "middle")
-      .style("font-weight", "bold")
-      .text(scene.title);
+  {
+    const svg = d3.create('svg')
+      .attr('width', width)
+      .attr('height', height);
+  
+    svg.append('g')
+      .attr('transform', `translate(0, ${height - margin.bottom})`)
+      .call(d3.axisBottom(x))
+      // Add x-axis title 'text' element.
+      .append('text')
+        .attr('text-anchor', 'end')
+        .attr('fill', 'black')
+        .attr('font-size', '12px')
+        .attr('font-weight', 'bold')
+        .attr('x', width - margin.right)
+        .attr('y', -10)
+        .text('Co2 Emissions');
+  
+    svg.append('g')
+      .attr('transform', `translate(${margin.left}, 0)`)
+      .call(d3.axisLeft(y))
+      // Add y-axis title 'text' element.
+      .append('text')
+        .attr('transform', `translate(20, ${margin.top}) rotate(-90)`)
+        .attr('text-anchor', 'end')
+        .attr('fill', 'black')
+        .attr('font-size', '12px')
+        .attr('font-weight', 'bold')
+        .text('Life Expectancy');
+    
+    const countries = svg
+      .selectAll('circle')
+      .data(dataTop20)
+      .join('circle')
+        .sort((a, b) => b.pop - a.pop) 
+        .attr('class', 'country')
+        .attr('opacity', 0.75)
+        .attr('fill', d => color(d.Country))
+        .attr('cx', d => x(d.Co2-Emissions))  
+        .attr('cy', d => y(d['Life expectancy']))
+        .attr('r', d => size(d.GDP));
+    
+    // add a tooltip
+    countries
+      .append('title')
+      .text(d => d.Country);
+    
+    // Add mouse hover interactions, using D3 to update attributes directly.
+    // In a stand-alone context, we could also use stylesheets with 'circle:hover'.
+    countries
+       // The 'on()' method registers an event listener function
+      .on('mouseover', function() {
+        // The 'this' variable refers to the underlying SVG element.
+        // We can select it directly, then use D3 attribute setters.
+        // (Note that 'this' is set when using "function() {}" definitions,
+        //  but *not* when using arrow function "() => {}" definitions.)
+        d3.select(this).attr('stroke', '#333').attr('stroke-width', 2);
+      })
+      .on('mouseout', function() {
+        // Setting the stroke color to null removes it entirely.
+        d3.select(this).attr('stroke', null);
+      });
+  
+    return svg.node();
   }
-  }
-}
-
-init();
