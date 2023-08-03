@@ -1,5 +1,5 @@
 
-var values = ['Co2-Emissions', 'Out of pocket health expenditure', 'Urban_population']
+var values = ['CO2 Emissions', 'Out of Pocket Health Expenditure (%)', 'Urban Population']
 
 var GDPSlider = document.getElementById("slider");
 var categorySelector = document.getElementById("category");
@@ -297,13 +297,13 @@ function displayChart(values, property) {
 
 
 
-    if (property == 'Co2-Emissions') {
+    if (property == 'CO2 Emissions') {
         document.getElementById("description").innerHTML = "Description for Co2 Emissions"
 
-    } else if (property == 'Out of pocket health expenditure') {
+    } else if (property == 'Out of Pocket Health Expenditure (%)') {
         document.getElementById("description").innerHTML = "Description forOut of pocket health expenditure"
 
-    } else if (property == 'Urban_population') {
+    } else if (property == 'Urban Population') {
         document.getElementById("description").innerHTML = "Description for Urban_population"
 
     } else {
