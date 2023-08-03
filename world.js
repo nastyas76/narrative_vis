@@ -196,7 +196,7 @@ function displayChart(values, property) {
     var annotations = [{
         note: {
             label: "These countries have low CO2 emissions and high life expectancy",
-            title: "Cluster of Countries"
+            title: "Cluster"
         },
         x: meanX,
         y: meanY,
@@ -238,6 +238,8 @@ function displayChart(values, property) {
         dots.enter().append("circle")
             .attr("class", "dot")
             .merge(dots) // Merge the enter and update selections
+            .transition()
+            .duration(1000)
             .attr("r", function (d) { return Math.max(3.5, (d.GDP / (totalGDP)) * 100); })
             .attr("cx", function (d) { return x(d[property]); })
             .attr("cy", function (d) { return y(d['Life expectancy']); })
