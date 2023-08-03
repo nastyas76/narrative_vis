@@ -1,4 +1,5 @@
-var values = ['Co2-Emissions', 'Out of pocket health expenditure', 'Urban_population']
+
+var values = ['CO2 Emissions', 'Out of Pocket Health Expenditure (%)', 'Urban Population']
 
 var GDPSlider = document.getElementById("slider");
 var categorySelector = document.getElementById("category");
@@ -21,18 +22,24 @@ d3.csv("https://nastyas76.github.io/narrative_vis/world-data-23-adjusted.csv").t
     previousButton.classList.add("hidden")
 
     previousButton.addEventListener('click', () => {
+        if(index==3){
+            nextButton.classList.remove("hidden")
+            document.getElementById("forth").classList.add("hidden");
+        }
         index--;
         displayChart(data, values[index]);
         if (index <= 0) {
             index = 0;
             previousButton.classList.add("hidden")
-            document.getElementById("forth").classList.remove("hidden");
+            document.getElementById("forth").classList.add("hidden");
+            
         }
         if (index < 3) {
             // hide div
             nextButton.classList.remove("hidden")
             document.getElementById("forth").classList.add("hidden");
         }
+        
     })
 
     nextButton.addEventListener('click', () => {
@@ -44,7 +51,7 @@ d3.csv("https://nastyas76.github.io/narrative_vis/world-data-23-adjusted.csv").t
             GDPSlider.max = max;
             nextButton.classList.add("hidden")
             document.getElementById("forth").classList.remove("hidden");
-            console.log("should be displayed")
+            document.getElementById('chart').innerHTML = ''; 
         }
         if (index > 0 && index < 3) {
             previousButton.classList.remove("hidden")
@@ -155,19 +162,7 @@ function displayChart(values, property) {
         .attr('font-weight', 'bold')
         .text(`Graph of ${property} verses Life expectancy by Country`);
 
-    // var zoom = d3.zoom()
-    //     .scaleExtent([1, 10])
-    //     .translateExtent([[0, 0], [width, height],])
-    //     .on("zoom", function () {
-    //         svg.attr("transform", d3.event.transform);
-    //         x.call(xAxis.scale(d3.event.transform.rescaleX(x)));
-    //         y.call(yAxis.scale(d3.event.transform.rescaleY(y)));
-    //     });
-
-    // if (!document.getElementById("forth").classList.contains("hidden")) {
-    //     // svg.call(zoom);
-    // }
-
+  
     var legend = svg.append("g")
         .attr("class", "legend")
         .selectAll("g")
@@ -191,17 +186,18 @@ function displayChart(values, property) {
 
     var meanX = d3.deviation(filteredData, function (d) { return x(d[property]); });
     var meanY = d3.deviation(filteredData, function (d) { return y(d['Life expectancy']); });
+    var avg = d3.mean(filteredData, function (d) { return x(d[property]); });
 
     var annotations = [{
         note: {
-            label: "These countries have low CO2 emissions and high life expectancy",
-            title: "Cluster 1"
+            label: `These countries have low ${property}(${parseInt(avg, 10)}) and high life expectancy.`,
+            title: "Cluster"
         },
         x: meanX,
         y: meanY,
-        dy: -50,
-        dx: 50,
-        subject: { radius: 50, radiusPadding: 10 },
+        dy: -80,
+        dx: 80,
+        subject: { radius: 30, radiusPadding: 10 },
     }];
 
 
@@ -234,35 +230,14 @@ function displayChart(values, property) {
         var dots = svg.selectAll(".dot")
         .data(data);
 
-        var prevPositions = {};
-        dots.each(function (d) {
-        var circle = d3.select(this);
-        prevPositions[d.Country] = {
-            cx: circle.attr("cx"),
-            cy: circle.attr("cy")
-        };
-    });
-
         dots.enter().append("circle")
             .attr("class", "dot")
             .merge(dots) // Merge the enter and update selections
             .transition()
             .duration(1000)
-            .attrTween("cx", function (d) {
-                var prevX = prevPositions[d.Country].cx || x(d[property]);
-                var interpolator = d3.interpolateNumber(prevX, x(d[property]));
-                return function (t) {
-                    return interpolator(t);
-                };
-            })
-            .attrTween("cy", function (d) {
-                var prevY = prevPositions[d.Country].cy || y(d['Life expectancy']);
-                var interpolator = d3.interpolateNumber(prevY, y(d['Life expectancy']));
-                return function (t) {
-                    return interpolator(t);
-                };
-            })
             .attr("r", function (d) { return Math.max(3.5, (d.GDP / (totalGDP)) * 100); })
+            .attr("cx", function (d) { return x(d[property]); })
+            .attr("cy", function (d) { return y(d['Life expectancy']); })
             .style("fill", function (d) { return color(d.Country); })
             .on('mouseover', function () {
                 d3.select(this).attr('stroke', '#000').attr('stroke-width', 1);
@@ -274,35 +249,17 @@ function displayChart(values, property) {
             .text(function (d) { return `Country: ${d.Country} \n${property}: ${d[property]}\nLife Expectancy: ${d['Life expectancy']}` });
 
         dots.exit().remove(); 
-
-        // svg.selectAll(".dot")
-        //     .data(data)
-        //     .enter().append("circle")
-        //     .attr("class", "dot")
-        //     .attr("r", function (d) { return Math.max(3.5, (d.GDP / (totalGDP)) * 100); })
-        //     .attr("cx", function (d) { return x(d[property]); })
-        //     .attr("cy", function (d) { return y(d['Life expectancy']); })
-        //     .style("fill", function (d) { return color(d.Country); })
-        //     .on('mouseover', function () {
-        //         d3.select(this).attr('stroke', '#000').attr('stroke-width', 1);
-        //     })
-        //     .on('mouseout', function () {
-        //         d3.select(this).attr('stroke', null);
-        //     })
-        //     .append('title')
-        //     .text(function (d) { return `Country: ${d.Country} \n${property}: ${d[property]}\nLife Expectancy: ${d['Life expectancy']}` });
         
     }
 
 
-
-    if (property == 'Co2-Emissions') {
+    if (property == 'CO2 Emissions') {
         document.getElementById("description").innerHTML = "Description for Co2 Emissions"
 
-    } else if (property == 'Out of pocket health expenditure') {
+    } else if (property == 'Out of Pocket Health Expenditure (%)') {
         document.getElementById("description").innerHTML = "Description forOut of pocket health expenditure"
 
-    } else if (property == 'Urban_population') {
+    } else if (property == 'Urban Population') {
         document.getElementById("description").innerHTML = "Description for Urban_population"
 
     } else {
@@ -310,3 +267,4 @@ function displayChart(values, property) {
     }
 
 }
+
