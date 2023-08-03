@@ -196,7 +196,7 @@ function displayChart(values, property) {
     var annotations = [{
         note: {
             label: "These countries have low CO2 emissions and high life expectancy",
-            title: "Cluster"
+            title: "Cluster 1"
         },
         x: meanX,
         y: meanY,
@@ -235,14 +235,35 @@ function displayChart(values, property) {
         var dots = svg.selectAll(".dot")
         .data(data);
 
+        var prevPositions = {};
+        dots.each(function (d) {
+        var circle = d3.select(this);
+        prevPositions[d.Country] = {
+            cx: circle.attr("cx"),
+            cy: circle.attr("cy")
+        };
+    });
+
         dots.enter().append("circle")
             .attr("class", "dot")
             .merge(dots) // Merge the enter and update selections
             .transition()
             .duration(1000)
+            .attrTween("cx", function (d) {
+                var prevX = prevPositions[d.Country].cx || x(d[property]);
+                var interpolator = d3.interpolateNumber(prevX, x(d[property]));
+                return function (t) {
+                    return interpolator(t);
+                };
+            })
+            .attrTween("cy", function (d) {
+                var prevY = prevPositions[d.Country].cy || y(d['Life expectancy']);
+                var interpolator = d3.interpolateNumber(prevY, y(d['Life expectancy']));
+                return function (t) {
+                    return interpolator(t);
+                };
+            })
             .attr("r", function (d) { return Math.max(3.5, (d.GDP / (totalGDP)) * 100); })
-            .attr("cx", function (d) { return x(d[property]); })
-            .attr("cy", function (d) { return y(d['Life expectancy']); })
             .style("fill", function (d) { return color(d.Country); })
             .on('mouseover', function () {
                 d3.select(this).attr('stroke', '#000').attr('stroke-width', 1);
