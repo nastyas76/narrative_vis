@@ -3,11 +3,9 @@ const height = 500;
 const width = 700;
 
 async function init () {
-    data = await d3.csv("https://nastyas76.github.io/narrative_vis/world-data-23_adjusted.csv", function(data) {
+    data = await d3.csv("https://nastyas76.github.io/narrative_vis/world-data-23-adjusted.csv", function(data) {
     console.log(data);
 
-    dataTop20 = data.slice().sort((a, b) => d3.descending(a.GDP, b.GDP))
-                    .filter(function(d, i) { return i < 20; });
 
     x = d3.scaleLinear()
         .domain([0, d3.max(data, d => d['Co2-Emissions'])])
@@ -58,7 +56,7 @@ async function init () {
 
     const countries = svg
         .selectAll('circle')
-        .data(dataTop20)
+        .data(data)
         .join('circle')
         .sort((a, b) => b.pop - a.pop) 
         .attr('class', 'country')
