@@ -198,7 +198,7 @@ function displayChart(values, property) {
     var annotations = [{
         note: {
             label: "These countries have low CO2 emissions and high life expectancy",
-            title: "Cluster 1"
+            title: "Cluster 2"
         },
         x: meanX,
         y: meanY,
