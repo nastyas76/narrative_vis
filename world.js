@@ -32,13 +32,13 @@ d3.csv("https://nastyas76.github.io/narrative_vis/world-data-23-adjusted.csv").t
             index = 0;
             previousButton.classList.add("hidden")
             document.getElementById("forth").classList.add("hidden");
-            
         }
         if (index < 3) {
             // hide div
             nextButton.classList.remove("hidden")
             document.getElementById("forth").classList.add("hidden");
         }
+
         
     })
 
@@ -51,7 +51,6 @@ d3.csv("https://nastyas76.github.io/narrative_vis/world-data-23-adjusted.csv").t
             GDPSlider.max = max;
             nextButton.classList.add("hidden")
             document.getElementById("forth").classList.remove("hidden");
-            document.getElementById('chart').innerHTML = ''; 
         }
         if (index > 0 && index < 3) {
             previousButton.classList.remove("hidden")
@@ -193,7 +192,7 @@ function displayChart(values, property) {
             label: `These countries have low ${property}(${parseInt(avg, 10)}) and high life expectancy.`,
             title: "Cluster"
         },
-        x: meanX,
+        x: avg,
         y: meanY,
         dy: -80,
         dx: 80,
@@ -267,4 +266,3 @@ function displayChart(values, property) {
     }
 
 }
-
