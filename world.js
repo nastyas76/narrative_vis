@@ -1,21 +1,19 @@
-
-var values = ['CO2 Emissions', 'Out of Pocket Health Expenditure (%)', 'Urban Population']
+var values = ['Co2-Emissions', 'Out of pocket health expenditure', 'Urban_population']
 
 var GDPSlider = document.getElementById("slider");
 var categorySelector = document.getElementById("category");
 
 var index = 0;
-var originalData;
 
 d3.csv("https://nastyas76.github.io/narrative_vis/world-data-23-adjusted.csv").then(function (data) {
-    originalData = data;
+
 
     var min = Math.min.apply(null, data.map(function (a) { return a.GDP; }))
         , max = Math.max.apply(null, data.map(function (a) { return a.GDP; }))
 
 
 
-    displayChart(originalData, values[index]);
+    displayChart(data, values[index]);
 
     var previousButton = document.getElementById("previousButton");
     var nextButton = document.getElementById("nextButton");
@@ -69,14 +67,23 @@ d3.csv("https://nastyas76.github.io/narrative_vis/world-data-23-adjusted.csv").t
 
 
 function displayChart(values, property) {
-    var minGDP = 0;
+    var minGDP = 0
+    if (!document.getElementById("forth").classList.contains("hidden")) {
+        minGDP = GDPSlider.value
+    }
+    // reset chart area
+    data = values.filter(function (d) { return d.GDP > minGDP; });
+
+
+     var minGDP = 0;
     if (!document.getElementById("forth").classList.contains("hidden")) {
         minGDP = GDPSlider.value;
     }
     // reset chart area
-    var data = values.filter(function (d) {
-        return d.GDP > minGDP && !isNaN(d[property]);
-    });
+    data = values.filter(function (d) { return d.GDP > minGDP; });
+
+    document.getElementById('chart').innerHTML = '';
+
 
     document.getElementById('chart').innerHTML = '';
 
@@ -93,6 +100,7 @@ function displayChart(values, property) {
     var color = d3.scaleOrdinal(d3.schemeCategory10);
 
     var xAxis = d3.axisBottom(x);
+
     var yAxis = d3.axisLeft(y);
 
     var svg = d3.select("#chart").append("svg")
@@ -187,7 +195,7 @@ function displayChart(values, property) {
     var annotations = [{
         note: {
             label: "These countries have low CO2 emissions and high life expectancy",
-            title: "Cluster 3"
+            title: "Cluster 1"
         },
         x: meanX,
         y: meanY,
@@ -288,13 +296,13 @@ function displayChart(values, property) {
 
 
 
-    if (property == 'CO2 Emissions') {
+    if (property == 'Co2-Emissions') {
         document.getElementById("description").innerHTML = "Description for Co2 Emissions"
 
-    } else if (property == 'Out of Pocket Health Expenditure (%)') {
+    } else if (property == 'Out of pocket health expenditure') {
         document.getElementById("description").innerHTML = "Description forOut of pocket health expenditure"
 
-    } else if (property == 'Urban Population') {
+    } else if (property == 'Urban_population') {
         document.getElementById("description").innerHTML = "Description for Urban_population"
 
     } else {
@@ -302,5 +310,3 @@ function displayChart(values, property) {
     }
 
 }
-
-
