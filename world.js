@@ -88,5 +88,19 @@ d3.csv("https://nastyas76.github.io/narrative_vis/world-data-23_adjusted.csv", f
       d3.select(this).attr('stroke', null);
     });
 
-  return svg.node();
+    // Add a legend.
+
+
+
+    // Add a title.
+    svg.append('text')
+        .attr('x', width / 2)
+        .attr('y', margin.top)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', '16px')
+        .attr('font-weight', 'bold')
+        .text('Top 20 Countries by GDP');
+
+
 });
+
