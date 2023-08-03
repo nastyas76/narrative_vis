@@ -69,24 +69,14 @@ d3.csv("https://nastyas76.github.io/narrative_vis/world-data-23-adjusted.csv").t
 
 
 function displayChart(values, property) {
-    var minGDP = 0
-    if (!document.getElementById("forth").classList.contains("hidden")) {
-        minGDP = GDPSlider.value
-    }
-    // reset chart area
-    data = values.filter(function (d) { return d.GDP > minGDP && d[property] > 0; });
-
-
-
-     var minGDP = 0;
+    var minGDP = 0;
     if (!document.getElementById("forth").classList.contains("hidden")) {
         minGDP = GDPSlider.value;
     }
     // reset chart area
-    data = values.filter(function (d) { return d.GDP > minGDP && d[property] > 0; });
-
-    document.getElementById('chart').innerHTML = '';
-
+    var data = values.filter(function (d) {
+        return d.GDP > minGDP && !isNaN(d[property]);
+    });
 
     document.getElementById('chart').innerHTML = '';
 
@@ -103,7 +93,6 @@ function displayChart(values, property) {
     var color = d3.scaleOrdinal(d3.schemeCategory10);
 
     var xAxis = d3.axisBottom(x);
-
     var yAxis = d3.axisLeft(y);
 
     var svg = d3.select("#chart").append("svg")
@@ -198,7 +187,7 @@ function displayChart(values, property) {
     var annotations = [{
         note: {
             label: "These countries have low CO2 emissions and high life expectancy",
-            title: "Cluster 2"
+            title: "Cluster 3"
         },
         x: meanX,
         y: meanY,
