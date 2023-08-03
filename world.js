@@ -2,7 +2,7 @@ margin = ({top: 10, right: 10, bottom: 20, left: 20})
 height = 500
 width = 700
  
-data= d3.csv("https://nastyas76.github.io/narrative_vis/world-data-23_adjusted.csv", function(data) {
+d3.csv("https://nastyas76.github.io/narrative_vis/world-data-23_adjusted.csv", function(data) {
   console.log(data);
 });
 
