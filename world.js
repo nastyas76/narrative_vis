@@ -145,18 +145,18 @@ function displayChart(values, property) {
         .attr('font-weight', 'bold')
         .text(`Graph of ${property} verses Life expectancy by Country`);
 
-    var zoom = d3.zoom()
-        .scaleExtent([1, 10])
-        .translateExtent([[0, 0], [width, height],])
-        .on("zoom", function () {
-            svg.attr("transform", d3.event.transform);
-            x.call(xAxis.scale(d3.event.transform.rescaleX(x)));
-            y.call(yAxis.scale(d3.event.transform.rescaleY(y)));
-        });
+    // var zoom = d3.zoom()
+    //     .scaleExtent([1, 10])
+    //     .translateExtent([[0, 0], [width, height],])
+    //     .on("zoom", function () {
+    //         svg.attr("transform", d3.event.transform);
+    //         x.call(xAxis.scale(d3.event.transform.rescaleX(x)));
+    //         y.call(yAxis.scale(d3.event.transform.rescaleY(y)));
+    //     });
 
-    if (!document.getElementById("forth").classList.contains("hidden")) {
-        // svg.call(zoom);
-    }
+    // if (!document.getElementById("forth").classList.contains("hidden")) {
+    //     // svg.call(zoom);
+    // }
 
     var legend = svg.append("g")
         .attr("class", "legend")
@@ -184,8 +184,8 @@ function displayChart(values, property) {
 
     var annotations = [{
         note: {
-            label: "Annotation",
-            title: "Cluster"
+            label: "These countries have low CO2 emissions and high life expectancy",
+            title: "Cluster of Countries"
         },
         x: meanX,
         y: meanY,
