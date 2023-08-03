@@ -1,13 +1,40 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Narrative Visualization</title>
-    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/2.5.1/d3-annotation.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
 </head>
+
 <body>
+    <h1>
+        Narrative Visualization of Life Expectancy Analysis for Top 20 Countries with Highest GDP
+    </h1>
+    <div style="margin-left: 100px;" class="hidden" id="forth">
+        Minimum GDP<input type="range" name="slider" id="slider" style="width: 100%;">
+        <p id="rangevalue"></p>
+        <select id="category">
+            <option selected value="0"></option>
+            <option value="0">Co2-Emissions</option>
+            <option value="1">Out of pocket health expenditure</option>
+            <option value="2">Urban_population</option>
+        </select>
+    </div>
     <div id="chart"></div>
-    <svg width="700" height="700"></svg>
-    <!-- <button id="nextButton">Next Scene</button> -->
+
+    <div style="margin-left: 100px;">
+        <p id="description"></p>
+        <button id="previousButton">Previous Scene</button>
+        <button id="nextButton">Next Scene</button>
+    </div>
     <script src="world.js"></script>
 </body>
+
 </html>
