@@ -75,6 +75,17 @@ function displayChart(values, property) {
     // reset chart area
     data = values.filter(function (d) { return d.GDP > minGDP; });
 
+
+     var minGDP = 0;
+    if (!document.getElementById("forth").classList.contains("hidden")) {
+        minGDP = GDPSlider.value;
+    }
+    // reset chart area
+    data = values.filter(function (d) { return d.GDP > minGDP; });
+
+    document.getElementById('chart').innerHTML = '';
+
+
     document.getElementById('chart').innerHTML = '';
 
     var margin = { top: 60, right: 20, bottom: 30, left: 100 },
@@ -221,11 +232,12 @@ function displayChart(values, property) {
             .style("fill", "none")
             .style("stroke", "black");
     } else {
+        var dots = svg.selectAll(".dot")
+        .data(data);
 
-        svg.selectAll(".dot")
-            .data(data)
-            .enter().append("circle")
+        dots.enter().append("circle")
             .attr("class", "dot")
+            .merge(dots) // Merge the enter and update selections
             .attr("r", function (d) { return Math.max(3.5, (d.GDP / (totalGDP)) * 100); })
             .attr("cx", function (d) { return x(d[property]); })
             .attr("cy", function (d) { return y(d['Life expectancy']); })
@@ -238,6 +250,25 @@ function displayChart(values, property) {
             })
             .append('title')
             .text(function (d) { return `Country: ${d.Country} \n${property}: ${d[property]}\nLife Expectancy: ${d['Life expectancy']}` });
+
+        dots.exit().remove(); 
+
+        // svg.selectAll(".dot")
+        //     .data(data)
+        //     .enter().append("circle")
+        //     .attr("class", "dot")
+        //     .attr("r", function (d) { return Math.max(3.5, (d.GDP / (totalGDP)) * 100); })
+        //     .attr("cx", function (d) { return x(d[property]); })
+        //     .attr("cy", function (d) { return y(d['Life expectancy']); })
+        //     .style("fill", function (d) { return color(d.Country); })
+        //     .on('mouseover', function () {
+        //         d3.select(this).attr('stroke', '#000').attr('stroke-width', 1);
+        //     })
+        //     .on('mouseout', function () {
+        //         d3.select(this).attr('stroke', null);
+        //     })
+        //     .append('title')
+        //     .text(function (d) { return `Country: ${d.Country} \n${property}: ${d[property]}\nLife Expectancy: ${d['Life expectancy']}` });
         
     }
 
