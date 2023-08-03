@@ -155,7 +155,7 @@ function displayChart(values, property) {
         });
 
     if (!document.getElementById("forth").classList.contains("hidden")) {
-        svg.call(zoom);
+        // svg.call(zoom);
     }
 
     var legend = svg.append("g")
