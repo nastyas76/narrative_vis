@@ -5,16 +5,17 @@ var GDPSlider = document.getElementById("slider");
 var categorySelector = document.getElementById("category");
 
 var index = 0;
+var originalData;
 
 d3.csv("https://nastyas76.github.io/narrative_vis/world-data-23-adjusted.csv").then(function (data) {
-
+    originalData = data;
 
     var min = Math.min.apply(null, data.map(function (a) { return a.GDP; }))
         , max = Math.max.apply(null, data.map(function (a) { return a.GDP; }))
 
 
 
-    displayChart(data, values[index]);
+    displayChart(originalData, values[index]);
 
     var previousButton = document.getElementById("previousButton");
     var nextButton = document.getElementById("nextButton");
@@ -73,7 +74,8 @@ function displayChart(values, property) {
         minGDP = GDPSlider.value
     }
     // reset chart area
-    data = values.filter(function (d) { return d.GDP > minGDP; });
+    data = values.filter(function (d) { return d.GDP > minGDP && d[property] > 0; });
+
 
 
      var minGDP = 0;
@@ -81,7 +83,7 @@ function displayChart(values, property) {
         minGDP = GDPSlider.value;
     }
     // reset chart area
-    data = values.filter(function (d) { return d.GDP > minGDP; });
+    data = values.filter(function (d) { return d.GDP > minGDP && d[property] > 0; });
 
     document.getElementById('chart').innerHTML = '';
 
