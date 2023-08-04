@@ -5,16 +5,20 @@ var GDPSlider = document.getElementById("slider");
 var categorySelector = document.getElementById("category");
 
 var index = 0;
+var forthIndex = 0;
+
+var allData;
 
 d3.csv("https://nastyas76.github.io/narrative_vis/world-data-23-adjusted.csv").then(function (data) {
 
+    allData = data;
 
     var min = Math.min.apply(null, data.map(function (a) { return a.GDP; }))
         , max = Math.max.apply(null, data.map(function (a) { return a.GDP; }))
 
 
 
-    displayChart(data, values[index]);
+    displayChart(allData, values[index]);
 
     var previousButton = document.getElementById("previousButton");
     var nextButton = document.getElementById("nextButton");
@@ -23,22 +27,22 @@ d3.csv("https://nastyas76.github.io/narrative_vis/world-data-23-adjusted.csv").t
 
     previousButton.addEventListener('click', () => {
             index--;
-        displayChart(data, values[index]);
         
         // Hide/Show Next Button and forth div based on the index value
         if (index <= 0) {
             index = 0;
             previousButton.classList.add("hidden");
+            displayChart(allData, values[index]);
         } else {
             nextButton.classList.remove("hidden");
             document.getElementById("forth").classList.add("hidden");
+            displayChart(allData, values[index]);
         }
         
     })
 
     nextButton.addEventListener('click', () => {
         index++;
-        displayChart(data, values[index]);
         if (index >= 3) {
             index = 3;
             GDPSlider.min = min;
@@ -46,21 +50,23 @@ d3.csv("https://nastyas76.github.io/narrative_vis/world-data-23-adjusted.csv").t
             nextButton.classList.add("hidden")
             document.getElementById("forth").classList.remove("hidden");
             document.getElementById('chart').innerHTML = ''; 
+            displayChart(allData, values[forthIndex]);
         }
-        if (index > 0 && index < 3) {
+        if (index >= 0 && index < 3) {
             previousButton.classList.remove("hidden")
             document.getElementById("forth").classList.add("hidden");
+            displayChart(allData, values[index]);
         }
     })
 
-    GDPSlider.addEventListener("change", function () {
+    GDPSlider.addEventListener("input", function () {
         document.getElementById("rangevalue").innerHTML = GDPSlider.value;
-        displayChart(data, values[index])
+        displayChart(allData, values[forthIndex])
     }, false);
 
     categorySelector.addEventListener("change", function () {
-        index = categorySelector.value;
-        displayChart(data, values[index])
+        forthIndex = categorySelector.value;
+        displayChart(allData, values[forthIndex])
     }, false);
 
 
@@ -68,25 +74,16 @@ d3.csv("https://nastyas76.github.io/narrative_vis/world-data-23-adjusted.csv").t
 
 
 function displayChart(values, property) {
+    var chartData = values;
     var minGDP = 0
     if (!document.getElementById("forth").classList.contains("hidden")) {
         minGDP = GDPSlider.value
     }
+
     // reset chart area
-    data = values.filter(function (d) { return d.GDP > minGDP; });
-
-
-     var minGDP = 0;
-    if (!document.getElementById("forth").classList.contains("hidden")) {
-        minGDP = GDPSlider.value;
-    }
-    // reset chart area
-    data = values.filter(function (d) { return d.GDP > minGDP; });
-
     document.getElementById('chart').innerHTML = '';
 
-
-    document.getElementById('chart').innerHTML = '';
+    chartData = values.filter(function (d) { return d.GDP > minGDP; });
 
     var margin = { top: 60, right: 20, bottom: 30, left: 100 },
         width = window.innerWidth - 100 - margin.left - margin.right,
@@ -110,15 +107,15 @@ function displayChart(values, property) {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    data.forEach(function (d) {
+    chartData.forEach(function (d) {
         d['Life expectancy'] = +d['Life expectancy'];
         d[property] = +d[property];
         d.GDP = +d.GDP;
     });
 
-    x.domain(d3.extent(data, function (d) { return d[property]; })).nice();
-    y.domain(d3.extent(data, function (d) { return d['Life expectancy']; })).nice();
-    var totalGDP = d3.sum(data, function (d) { return d.GDP; });
+    x.domain([0,d3.extent(chartData, function (d) { return d[property]; })[1]]).nice();
+    y.domain(d3.extent(chartData, function (d) { return d['Life expectancy']; })).nice();
+    var totalGDP = d3.sum(chartData, function (d) { return d.GDP; });
 
     svg.append("g")
         .attr("class", "x axis")
@@ -176,7 +173,7 @@ function displayChart(values, property) {
         .attr("dy", "0.50em")
         .text(function (d) { return d.Country; });
 
-    var filteredData = data.filter(function (d) { return (d.GDP / totalGDP) < 0.035; });
+    var filteredData = chartData.filter(function (d) { return (d.GDP / totalGDP) < 0.035; });
 
     var meanX = d3.deviation(filteredData, function (d) { return x(d[property]); });
     var meanY = d3.deviation(filteredData, function (d) { return y(d['Life expectancy']); });
@@ -189,7 +186,7 @@ function displayChart(values, property) {
         },
         x: meanX,
         y: meanY,
-        dy: -80,
+        dy: meanY -80,
         dx: 80,
         subject: { radius: 30, radiusPadding: 10 },
     }];
@@ -197,7 +194,7 @@ function displayChart(values, property) {
 
     if (document.getElementById("forth").classList.contains("hidden")) {
         svg.selectAll(".dot")
-            .data(data)
+            .data(chartData)
             .enter().append("circle")
             .attr("class", "dot")
             .attr("r", function (d) { return Math.max(3.5, (d.GDP / (totalGDP)) * 100); })
@@ -222,13 +219,11 @@ function displayChart(values, property) {
             .style("stroke", "black");
     } else {
         var dots = svg.selectAll(".dot")
-        .data(data);
+        .data(chartData);
 
         dots.enter().append("circle")
             .attr("class", "dot")
             .merge(dots) // Merge the enter and update selections
-            .transition()
-            .duration(1000)
             .attr("r", function (d) { return Math.max(3.5, (d.GDP / (totalGDP)) * 100); })
             .attr("cx", function (d) { return x(d[property]); })
             .attr("cy", function (d) { return y(d['Life expectancy']); })
@@ -261,4 +256,3 @@ function displayChart(values, property) {
     }
 
 }
-
