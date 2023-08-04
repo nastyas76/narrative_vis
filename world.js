@@ -22,21 +22,15 @@ d3.csv("https://nastyas76.github.io/narrative_vis/world-data-23-adjusted.csv").t
     previousButton.classList.add("hidden")
 
     previousButton.addEventListener('click', () => {
-        if(index==3){
-            nextButton.classList.remove("hidden")
-            document.getElementById("forth").classList.add("hidden");
-        }
-        index--;
+            index--;
         displayChart(data, values[index]);
+        
+        // Hide/Show Next Button and forth div based on the index value
         if (index <= 0) {
             index = 0;
-            previousButton.classList.add("hidden")
-            document.getElementById("forth").classList.add("hidden");
-            
-        }
-        if (index < 3) {
-            // hide div
-            nextButton.classList.remove("hidden")
+            previousButton.classList.add("hidden");
+        } else {
+            nextButton.classList.remove("hidden");
             document.getElementById("forth").classList.add("hidden");
         }
         
