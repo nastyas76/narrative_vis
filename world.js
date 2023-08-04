@@ -17,7 +17,7 @@ d3.csv("https://nastyas76.github.io/narrative_vis/world-data-23-adjusted.csv").t
         , max = Math.max.apply(null, data.map(function (a) { return a.GDP; }))
 
 
-
+    
     displayChart(allData, values[index]);
 
     var previousButton = document.getElementById("previousButton");
@@ -112,6 +112,7 @@ function displayChart(values, property) {
         d[property] = +d[property];
         d.GDP = +d.GDP;
     });
+    
 
     x.domain([0,d3.extent(chartData, function (d) { return d[property]; })[1]]).nice();
     y.domain(d3.extent(chartData, function (d) { return d['Life expectancy']; })).nice();
@@ -181,8 +182,8 @@ function displayChart(values, property) {
 
     var annotations = [{
         note: {
-            label: `These countries have low ${property}(${parseInt(avg, 10)}) and high life expectancy.`,
-            title: "Cluster 1"
+            label: `This is the mean of the graph. It shows a trend of low ${property.toLowerCase()} and high life expectancy.`,
+            title: "Mean"
         },
         x: meanX,
         y: meanY,
@@ -207,6 +208,7 @@ function displayChart(values, property) {
         // Add the annotation to the chart
         svg.append("g")
             .attr("class", "annotation-group")
+            .style("font-size", 15)
             .call(makeAnnotations);
 
         // Draw a circle around each cluster
@@ -243,13 +245,13 @@ function displayChart(values, property) {
 
 
     if (property == 'CO2 Emissions') {
-        document.getElementById("description").innerHTML = "Description for Co2 Emissions"
+        document.getElementById("description").innerHTML = "In this visualization, we can see that there is a negative correlation between CO2 emissions and life expectancy. This means that as CO2 emissions increase, life expectancy decreases. This is because CO2 emissions are a proxy for pollution, and pollution is bad for health. This is a trend that is seen in many countries, and is a major reason why countries are trying to reduce their CO2 emissions."
 
     } else if (property == 'Out of Pocket Health Expenditure (%)') {
-        document.getElementById("description").innerHTML = "Description forOut of pocket health expenditure"
+        document.getElementById("description").innerHTML = "Here, a negative correlation between out of pocket health expenditure and life expectancy can be seen. This means that as out of pocket health expenditure increases, life expectancy decreases. This is because out of pocket health expenditure is a proxy for the quality of healthcare. This is a trend that is seen in many countries, and is a major reason why it is a good idea for countries to reduce their out of pocket health expenditure."
 
     } else if (property == 'Urban Population') {
-        document.getElementById("description").innerHTML = "Description for Urban_population"
+        document.getElementById("description").innerHTML = "A negative correlation also dominates this graph. This means that as urban population increases, life expectancy decreases. This is because urban population is a proxy for pollution, and pollution has adverse effects on health. A reduction in pollution in urban areas, which are known to be a major source of CO2 emissions, by switching to greener practices and cars, would be a way to reduce the effects of large urban populations on life expectancy."
 
     } else {
         document.getElementById("description").innerHTML = ""

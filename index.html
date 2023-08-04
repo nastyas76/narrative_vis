@@ -14,9 +14,12 @@
 </head>
 
 <body>
-    <h1>
+    <h1 style="text-align: center;">
         Narrative Visualization of Life Expectancy Analysis for Top 20 Countries with Highest GDP
     </h1>
+    <p style="text-align: center; margin-left:150px; word-wrap: break-word; width: 80%" >
+        This is an interactive visualization of 2023's top 20 countries with the highest GDP and the relationship between their life expectancy and three factors: CO2 emissions, personal expenditure on healthcare, and percent of the population living in urban areas. This visualization was created to analyze trends with recent data and to aid someone who might be deciding where to move in the near future. Dot size is representative of a country's GDP. Mousing over each country in the last interactive slide will reveal more information.
+    </p>
     <div style="margin-left: 100px;" class="hidden" id="forth">
         Minimum GDP Threshold for Plot<input type="range" name="slider" id="slider" style="width: 25%;">
         <p id="rangevalue"></p>
@@ -27,12 +30,14 @@
         </select>
     </div>
     <div id="chart"></div>
-
     <div style="margin-left: 100px;">
-        <p id="description"></p>
-        <button id="previousButton">Previous Scene</button>
-        <button id="nextButton">Next Scene</button>
+        <button id="previousButton">Previous</button>
+        <button id="nextButton">Next</button>
     </div>
+    <div>
+        <p id="description" style="width: 700px; margin: 10px auto 50px; text-align: center;"></p>
+    </div>
+    
     <script src="world.js"></script>
 </body>
 
